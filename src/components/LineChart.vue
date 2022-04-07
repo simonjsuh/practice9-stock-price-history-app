@@ -27,40 +27,11 @@ let stockMarketHistoryPrices = [];
 let myChart;
 myChart;
 
-let updateStockPriceHistoryChart = () => {
-  // beginning of line chart code //
-  const ctx = document.getElementById('myChart');
 
-  // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-  const labels = stockMarketHistoryDates;
-  const data = {
-    labels: labels,
-    datasets: [{
-      label: 'My First Dataset',
-      // data: [65, 59, 80, 81, 56, 55, 40],
-      data: stockMarketHistoryPrices,
-      fill: false,
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0,
-      options: {
-        responsive:true,
-        maintainAspectRatio: false,
-      }
-    }]
-  };
 
-  // if (typeof myChart != 'undefined') {
-  //   myChart.destroy();
-  // }
-
-  const myChart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-  });
-
-  myChart;
-  // end of line chart code //
-}
+// let updateChart = () => {
+//   console.log(myChart)
+// }
 
 // let updateStockPriceHistoryChart_IfChartAlreadyExists = () => {
 //   myChart.destroy();
@@ -131,37 +102,37 @@ export default {
         .then(() => {
           // console.log(stockMarketHistory.data["Monthly Adjusted Time Series"]["2022-03-31"]["4. close"]);
           
-          console.log(stockMarketHistoryDates.length);
-          console.log(stockMarketHistoryPrices.length);
+          // console.log(stockMarketHistoryDates.length);
+          // console.log(stockMarketHistoryPrices.length);
 
           // stockMarketHistoryDates = [];
           // stockMarketHistoryPrices = [];
 
           // find index of stockMarketHistoryDates where the value is less than 5 years ago.
           
-          console.log(dateRange);
+          // console.log(dateRange);
           let now = Date.now()/1000;
-          console.log('Now: ' + now + '\n5 years ago: ' + (now - dateRange));
+          // console.log('Now: ' + now + '\n5 years ago: ' + (now - dateRange));
           let dateRangeDate = now - dateRange;
-          console.log('dateRangeDate: ' + dateRangeDate);
+          // console.log('dateRangeDate: ' + dateRangeDate);
 
           const isLaterDateThanDateRangeDate = (date) => {
             return date > dateRangeDate;
           }
 
-          console.log(stockMarketHistoryEpochDates);
-          console.log('dateRangeDate: ' + dateRangeDate);
+          // console.log(stockMarketHistoryEpochDates);
+          // console.log('dateRangeDate: ' + dateRangeDate);
           
           let arrayIndexWhereDateIsLargerThanDateRangeDate = stockMarketHistoryEpochDates.findIndex(isLaterDateThanDateRangeDate);
 
-          console.log(arrayIndexWhereDateIsLargerThanDateRangeDate);
+          // console.log(arrayIndexWhereDateIsLargerThanDateRangeDate);
 
           // update stockMarketHistoryDates and stockMarketHistoryPrices arrays to delete all values before the index indicated by arrayIndexWhereDateIsLargerThanDateRangeDate
 
           stockMarketHistoryDates.splice(0, arrayIndexWhereDateIsLargerThanDateRangeDate);
           stockMarketHistoryPrices.splice(0, arrayIndexWhereDateIsLargerThanDateRangeDate);
 
-          updateStockPriceHistoryChart();
+          this.updateStockPriceHistoryChart();
         });
     }
     // end of stock API code
@@ -169,6 +140,73 @@ export default {
     createStockPriceHistoryChartInSpecifiedDateHistoryRange(23456345634563463465436);
   },
   setup() {
+    let updateStockPriceHistoryChart = () => {
+      // beginning of line chart code //
+      const ctx = document.getElementById('myChart');
+
+      // let clearCanvas = ctx.getContext('2d');
+      // clearCanvas.clearRect(0, 0, ctx.width, ctx.height);
+
+      // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+      const labels = stockMarketHistoryDates;
+      const data = {
+        labels: labels,
+        datasets: [{
+          label: 'My First Dataset',
+          // data: [65, 59, 80, 81, 56, 55, 40],
+          data: stockMarketHistoryPrices,
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0,
+          options: {
+            responsive:true,
+            maintainAspectRatio: false,
+          }
+        }]
+      };
+
+      let myChart = null;
+  
+
+      // if (myChart != 'undefined') {
+      //   console.log('before chart init');
+      //   console.log(myChart);
+
+      //   myChart.destroy();
+      // }
+      
+
+
+      // if (myChart != null) {
+      //   console.log(myChart);
+      //   myChart.destroy();
+      //   console.log('destroyed');
+      // } else {
+      //   console.log('nothing there to destroy');
+      //   console.log(myChart);
+      // }
+
+
+      // if (myChart) {
+      //   myChart.destroy();
+      // }
+
+      const chartWithKey = Chart.getChart('myChart');
+      if (chartWithKey != undefined) {
+        chartWithKey.destroy();
+      }
+
+      myChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+      });
+
+      console.log('working myChart: ' + myChart);
+      console.log(myChart)
+      // end of line chart code //
+    }
+
+
     // beginning of stock API code
     let stockSymbol = 'IBM';
 
@@ -246,8 +284,8 @@ export default {
             return date > dateRangeDate;
           }
 
-          console.log(stockMarketHistoryEpochDates);
-          console.log('dateRangeDate: ' + dateRangeDate);
+          // console.log(stockMarketHistoryEpochDates);
+          // console.log('dateRangeDate: ' + dateRangeDate);
           
           let arrayIndexWhereDateIsLargerThanDateRangeDate = stockMarketHistoryEpochDates.findIndex(isLaterDateThanDateRangeDate);
 
@@ -258,13 +296,20 @@ export default {
           stockMarketHistoryDates.splice(0, arrayIndexWhereDateIsLargerThanDateRangeDate);
           stockMarketHistoryPrices.splice(0, arrayIndexWhereDateIsLargerThanDateRangeDate);
 
-          // updateStockPriceHistoryChart();
+          updateStockPriceHistoryChart();
+
+          // updateChart();
+          console.log('In setup');
+          console.log('In setup: ' + myChart);
+          console.log(window.myChart);
+          // window.myChart.destroy();
         });
     }
     // end of stock API code
 
     return {
       createStockPriceHistoryChartInSpecifiedDateHistoryRange,
+      updateStockPriceHistoryChart,
     }
   }
 }
