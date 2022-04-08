@@ -122,6 +122,13 @@ export default {
     let AlphaVantangeAPI_URL_Link = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${stockSymbol}&apikey=demo`;
 
     let createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP = (dateRange) => {
+      // empty array if something already in there
+      if (stockMarketHistoryDates.length > 0) {
+        stockMarketHistoryDates = [];
+        stockMarketHistoryEpochDates = [];
+        stockMarketHistoryPrices = [];
+      }
+      
       axios.get(AlphaVantangeAPI_URL_Link)
         .then(response => {
           stockMarketHistory = response
