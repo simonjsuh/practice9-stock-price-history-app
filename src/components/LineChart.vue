@@ -128,7 +128,7 @@ export default {
         stockMarketHistoryEpochDates = [];
         stockMarketHistoryPrices = [];
       }
-      
+
       axios.get(AlphaVantangeAPI_URL_Link)
         .then(response => {
           stockMarketHistory = response
@@ -147,6 +147,10 @@ export default {
             closingDateProperlyFormatted
             closingPrice
             closingDateEpochTime
+
+            stockMarketHistoryDates.unshift(closingDateProperlyFormatted)
+            stockMarketHistoryEpochDates.unshift(closingDateEpochTime)
+            stockMarketHistoryPrices.unshift(closingPrice)
           }
         })
         .then(() => {
