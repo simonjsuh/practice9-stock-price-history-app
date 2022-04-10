@@ -1,12 +1,21 @@
 <template>
   <div class="lineChart">
     <div class="chartAndButtonsContainer">
-      <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(86400)">1 day</button>
-      <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(604800)">1 week</button>
-      <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(2630000)">1 month</button>
-      <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(31536000)">1 year</button>
-      <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(157680000 )">5 years</button>
-      <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(10000000000000000)">MAX</button>
+      <form action="" id="stockSymbolSearchForm" @submit.prevent="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(15768000000000000)">
+        <input name="stockSymbolSearch" type="text" placeholder="enter the symbol of the stock you want to search" id="stockSymbolSearchBar" v-model="stockSymbol">
+        <button type="submit" class="submit">Search</button>
+      </form>
+      <br>
+      <p>Active Stock Symbol: {{ stockSymbol }}</p>
+      <br>
+      <div class="dateRangeButtons">
+        <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(86400)">1 day</button>
+        <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(604800)">1 week</button>
+        <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(2630000)">1 month</button>
+        <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(31536000)">1 year</button>
+        <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(157680000)">5 years</button>
+        <button @click="createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP(10000000000000000)">MAX</button>
+      </div>
 
       <div id="chartContainer">
         <canvas id="myChart" width="400px" height="400px"></canvas>
@@ -16,6 +25,7 @@
 </template>
 
 <script>
+import { ref, computed } from 'vue';
 import Chart from 'chart.js/auto';
 import axios from 'axios'
 
@@ -33,7 +43,7 @@ export default {
     // beginning of stock API code
     let stockSymbol = 'IBM';
 
-    let AlphaVantangeAPI_URL_Link = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${stockSymbol}&apikey=demo`;
+    let AlphaVantangeAPI_URL_Link = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${stockSymbol}&apikey=6S3XWKYVUZIUJZEF`;
 
     let createStockPriceHistoryChartInSpecifiedDateHistoryRange = (dateRange) => {
       axios.get(AlphaVantangeAPI_URL_Link)
@@ -117,11 +127,15 @@ export default {
 
 
     // beginning of stock API code
-    let stockSymbol = 'IBM';
+    let stockSymbol = ref('AMZN');
 
-    let AlphaVantangeAPI_URL_Link = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${stockSymbol}&apikey=demo`;
+    let AlphaVantangeAPI_URL_Link = computed(() => 
+      'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=' + stockSymbol.value + '&apikey=6S3XWKYVUZIUJZEF'
+    ); 
 
     let createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP = (dateRange) => {
+      console.log('selected stock symbol: ' + stockSymbol.value);
+
       // empty array if something already in there
       if (stockMarketHistoryDates.length > 0) {
         stockMarketHistoryDates = [];
@@ -129,7 +143,9 @@ export default {
         stockMarketHistoryPrices = [];
       }
 
-      axios.get(AlphaVantangeAPI_URL_Link)
+      console.log(AlphaVantangeAPI_URL_Link.value);
+
+      axios.get(AlphaVantangeAPI_URL_Link.value)
         .then(response => {
           stockMarketHistory = response
 
@@ -185,6 +201,8 @@ export default {
     return {
       createStockPriceHistoryChartInSpecifiedDateHistoryRangeSETUP,
       updateStockPriceHistoryChart,
+      stockSymbol,
+      AlphaVantangeAPI_URL_Link,
     }
   }
 }
@@ -195,5 +213,16 @@ export default {
 #chartContainer {
   width: 1000px;
   height: 300px;
+  margin: 0 auto;
+}
+#stockSymbolSearchBar {
+  padding: 10px;
+}
+#stockSymbolSearchForm .submit {
+  padding: 10px 20px;
+}
+.dateRangeButtons button {
+  padding: 10px 20px;
+  margin: 2px;
 }
 </style>
